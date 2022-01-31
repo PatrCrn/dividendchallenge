@@ -3,21 +3,32 @@ import {useEffect, useState} from "react";
 
 function App() {
     const [companies, setCompanies] = useState([]);
-    //const [companies, setCompanies] = useState([]);
 
-    useEffect(async () => {
-        await getCompanies()
-            .then(displayCompanies);
+
+    useEffect( async() => {
+       let data = await   getCompanies();
+       setCompanies(data);
     }, []);
 
-    const getCompanies = async _ => {
-        await fetch("https://gist.githubusercontent.com/VincentLeV/a0c326b9cbeabf63b4e5e02aa9779f6c/raw/b916a9e3d40aef926bf7e3b9b4db308d7da1ca5d/shares.json")
+
+//https://spectrum.chat/react/general/react-hooks-best-way-to-call-a-fn-after-setstate~da2e457d-4d26-4133-8910-44c66c247f7e
+    useEffect(() => {
+        displayCompanies();
+      }, [companies]); // Only re-run the effect if open changes
+
+
+
+
+    const getCompanies =  _ => {
+         return fetch("https://gist.githubusercontent.com/VincentLeV/a0c326b9cbeabf63b4e5e02aa9779f6c/raw/b916a9e3d40aef926bf7e3b9b4db308d7da1ca5d/shares.json")
             .then(response => response.json())
-            .then(responseJson => setCompanies(responseJson))
-            .then(_ => console.log(companies))
+            .then(responseJson => {
+               return responseJson
+            })
+            
     }
 
-    const displayCompanies = _=>{
+    const displayCompanies = _ =>{
         for (let i = 0; i < companies.length; i++) {
             let divHistory = companies[i].dividendHistory;
             let price = companies[i].price;
